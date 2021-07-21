@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
+plt.rcParams['font.sans-serif'] = 'SimHei'
+
 (x_train, _), (x_test, _) = fashion_mnist.load_data()
 
 # 图像归一化
@@ -21,7 +23,7 @@ print(x_test.shape)
 encode = load_model('encoder.h5')
 
 # 设置检索图像下标
-NUM = 20
+NUM = 18
 
 # 开始不带哈希的检索测试
 query = x_test[NUM]
@@ -31,16 +33,13 @@ plt.show()
 # 对测试集图片提取特征
 test_features = encode.predict(x_test)
 
-
-
 # 对待检图片提取特征
 query_features = encode.predict(query.reshape(1, 28, 28, 1))
 
-# 检索时间
-start = time.time()
+
 # 对提取后的特征进行最近邻检测
 # 得到最相似的x个图片
-n_neigh = [3, 5]
+n_neigh = [1, 3, 5, 9, 10]
 
 test_features = test_features.reshape(-1, 4 * 4 * 8)
 query_features = query_features.reshape(1, 4 * 4 * 8)
@@ -53,6 +52,8 @@ match_num = 0
 precisions = []
 recalls = []
 
+# 检索时间
+start = time.time()
 for neigh in n_neigh:
     # 实例化最近邻模型，并计算最相似的图片
     nbrs = NearestNeighbors(n_neighbors=neigh).fit(test_features)
@@ -60,7 +61,6 @@ for neigh in n_neigh:
 
     closest_images = x_test[indices]
     print(f"检索耗时:{time.time() - start}s")
-
 
     closest_images = closest_images.reshape(-1, 28, 28, 1)
 
@@ -93,3 +93,11 @@ MAP = sum(precisions) / len(n_neigh)
 print(f"测试检索{len(n_neigh)}次，查全率分别为:{precisions}\n"
       f"召回率分别为:{recalls}\n"
       f"平均查询检索精度:{MAP}")
+
+# 绘制PR曲线
+plt.figure()
+plt.plot(recalls, precisions)
+plt.title("PR曲线")
+plt.xlabel("召回率")
+plt.ylabel("查全率")
+plt.show()

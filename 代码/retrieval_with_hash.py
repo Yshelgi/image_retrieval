@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from DHash import DHash
 
-
+plt.rcParams['font.sans-serif'] = 'SimHei'
 
 (x_train, _), (x_test, _) = fashion_mnist.load_data()
 
@@ -23,14 +23,13 @@ print(x_test.shape)
 encode = load_model('encoder.h5')
 
 # 设置检索图像下标
-NUM = 20
+NUM = 18
 
 # 开始不带哈希的检索测试
 query = x_test[NUM]
 # 展示待检图片
 plt.imshow(query.reshape(28, 28), cmap='gray')
 plt.show()
-
 
 # 对剩余测试集图片提取特征
 test_features = encode.predict(x_test)
@@ -39,20 +38,17 @@ test_features = encode.predict(x_test)
 query_features = encode.predict(query.reshape(1, 28, 28, 1))
 test_features = test_features.reshape(-1, 4 * 4 * 8)
 query_features = query_features.reshape(1, 4 * 4 * 8)
-#print(test_features[-1].shape,query_features.shape)
+# print(test_features[-1].shape,query_features.shape)
 # 对提取后的特征进行hash编码
 test_hash = []
 for i in range(len(test_features)):
     test_hash.append(DHash.calculate_hash(test_features[i]))
 
-
-
-
 query_hash = DHash.calculate_hash(query_features)
 # 检索时间
 start = time.time()
 # 得到最相似的x个图片
-n_neigh = [3, 5]
+n_neigh = [1, 3, 5, 9, 10]
 
 base_list = [0, 10000, 20000, 30000]
 base_list = [i + NUM for i in base_list]
@@ -63,16 +59,14 @@ precisions = []
 recalls = []
 
 for neigh in n_neigh:
-    distances=[]
+    distances = []
     for i in range(len(test_hash)):
-        distances.append(DHash.hamming_distance(query_hash,test_hash[i]))
-    res=sorted(enumerate(distances), key=lambda x: x[1])
-    indices=res[:neigh]
-    indices=[i[0] for i in indices]
+        distances.append(DHash.hamming_distance(query_hash, test_hash[i]))
+    res = sorted(enumerate(distances), key=lambda x: x[1])
+    indices = res[:neigh]
+    indices = [i[0] for i in indices]
     closest_images = x_test[indices]
     print(f"检索耗时:{time.time() - start}s")
-
-
 
     closest_images = closest_images.reshape(-1, 28, 28, 1)
 
@@ -99,10 +93,18 @@ for neigh in n_neigh:
     # 更新第二次检索时间
     start = time.time()
 
-
 # MAP 平均查询检索精度
 MAP = sum(precisions) / len(n_neigh)
 
 print(f"测试检索{len(n_neigh)}次，查全率分别为:{precisions}\n"
       f"召回率分别为:{recalls}\n"
       f"平均查询检索精度:{MAP}")
+
+
+# 绘制PR曲线
+plt.figure()
+plt.plot(recalls,precisions)
+plt.title("PR曲线")
+plt.xlabel("召回率")
+plt.ylabel("查全率")
+plt.show()
