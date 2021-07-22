@@ -44,9 +44,6 @@ test_hash = []
 for i in range(len(test_features)):
     test_hash.append(DHash.calculate_hash(test_features[i]))
 
-query_hash = DHash.calculate_hash(query_features)
-# 检索时间
-start = time.time()
 # 得到最相似的x个图片
 n_neigh = [1, 3, 5, 9, 10]
 
@@ -57,6 +54,11 @@ match_num = 0
 
 precisions = []
 recalls = []
+
+
+# 检索时间
+start = time.time()
+query_hash = DHash.calculate_hash(query_features)
 
 for neigh in n_neigh:
     distances = []
@@ -90,21 +92,30 @@ for neigh in n_neigh:
     # 召回率 有四组重复数据
     recalls.append(match_num / 4)
 
+
     # 更新第二次检索时间
     start = time.time()
 
-# MAP 平均查询检索精度
-MAP = sum(precisions) / len(n_neigh)
+# AP 查询检索精度
+AP = sum(precisions) / len(n_neigh)
 
 print(f"测试检索{len(n_neigh)}次，查全率分别为:{precisions}\n"
       f"召回率分别为:{recalls}\n"
-      f"平均查询检索精度:{MAP}")
-
+      f"平均查询检索精度:{AP}")
 
 # 绘制PR曲线
 plt.figure()
-plt.plot(recalls,precisions)
+plt.plot(recalls, precisions)
 plt.title("PR曲线")
 plt.xlabel("召回率")
 plt.ylabel("查全率")
 plt.show()
+
+# # 绘制MAPs
+# plt.figure()
+# plt.plot(n_neigh, MAPs, c='r')
+# plt.xlabel("topk")
+# plt.ylabel("MAP")
+# plt.xticks(n_neigh,n_neigh)
+# plt.title("MAPs")
+# plt.show()

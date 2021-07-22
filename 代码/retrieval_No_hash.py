@@ -36,7 +36,6 @@ test_features = encode.predict(x_test)
 # 对待检图片提取特征
 query_features = encode.predict(query.reshape(1, 28, 28, 1))
 
-
 # 对提取后的特征进行最近邻检测
 # 得到最相似的x个图片
 n_neigh = [1, 3, 5, 9, 10]
@@ -83,16 +82,15 @@ for neigh in n_neigh:
     precisions.append(match_num / neigh)
     # 召回率 有四组重复数据
     recalls.append(match_num / 4)
-
     # 更新第二次检索时间
     start = time.time()
 
-# MAP 平均查询检索精度
-MAP = sum(precisions) / len(n_neigh)
+# AP 查询检索精度
+AP = sum(precisions) / len(n_neigh)
 
 print(f"测试检索{len(n_neigh)}次，查全率分别为:{precisions}\n"
       f"召回率分别为:{recalls}\n"
-      f"平均查询检索精度:{MAP}")
+      f"平均查询检索精度:{AP}")
 
 # 绘制PR曲线
 plt.figure()
@@ -101,3 +99,13 @@ plt.title("PR曲线")
 plt.xlabel("召回率")
 plt.ylabel("查全率")
 plt.show()
+
+
+# # 绘制MAPs
+# plt.figure()
+# plt.plot(n_neigh, APs, c='y')
+# plt.xlabel("topk")
+# plt.ylabel("MAP")
+# plt.xticks(n_neigh,n_neigh)
+# plt.title("MAPs")
+# plt.show()
