@@ -28,3 +28,5 @@ decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
 # 创建自编码器
 autoencoder = Model(input_img, decoded)
 
+
+

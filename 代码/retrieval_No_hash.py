@@ -78,7 +78,7 @@ for neigh in n_neigh:
 
     match_num = len([i for i in list(indices[0]) if i in base_list])
 
-    # 查全率
+    # 查准率
     precisions.append(match_num / neigh)
     # 召回率 有四组重复数据
     recalls.append(match_num / 4)
@@ -88,20 +88,20 @@ for neigh in n_neigh:
 # AP 查询检索精度
 AP = sum(precisions) / len(n_neigh)
 
-print(f"测试检索{len(n_neigh)}次，查全率分别为:{precisions}\n"
+print(f"测试检索{len(n_neigh)}次，查准率分别为:{precisions}\n"
       f"召回率分别为:{recalls}\n"
-      f"平均查询检索精度:{AP}")
+      f"查询检索精度:{AP}")
 
 # 绘制PR曲线
 plt.figure()
 plt.plot(recalls, precisions)
 plt.title("PR曲线")
 plt.xlabel("召回率")
-plt.ylabel("查全率")
+plt.ylabel("查准率")
 plt.show()
 
 
-# # 绘制MAPs
+# # 绘制MAPs 外面设置多张待检图片并且增加一层循环
 # plt.figure()
 # plt.plot(n_neigh, APs, c='y')
 # plt.xlabel("topk")
