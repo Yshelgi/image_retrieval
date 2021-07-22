@@ -148,19 +148,19 @@ n_neigh = [1, 3, 5, 9, 10]
 
 +   hash编码
 
-    ![image-20210721194840162](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210721194840162.png)
+    ![image-20210722153540877](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210722153540877.png)
+
+![image-20210722153626027](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210722153626027.png)
 
 
-
-![image-20210721194930538](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210721194930538.png)
 
 +   最近邻查找
 
-![image-20210721195133505](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210721195133505.png)
+![image-20210722153707578](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210722153707578.png)
+
+![image-20210722153725195](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210722153725195.png)
 
 
-
-![image-20210721194523835](https://gitee.com/shixiaojiejiela_admin/pics/raw/master///image-20210721194523835.png)
 
 可以看出两种方法在性能上没有较大差异，但是在检索时间上最近邻只需要向量化计算一次全局图片距离，而hash方法则需要每一个图片比对汉明距从而得到最相似图片，因此最近邻查找耗时远远小于hash查找。而且在有限的测试集上，两种方法都得到了最优的结果（相似的图片只有四种）。
 
